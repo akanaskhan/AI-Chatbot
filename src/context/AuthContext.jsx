@@ -3,7 +3,7 @@ import { createContext, useEffect, useState } from "react";
 import { auth, db } from "../utils/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { Spin } from "antd";
-import Loader from "../components/loader";
+import Loader from "../components/Loader.jsx";
 
 export const AuthContext = createContext();
 
