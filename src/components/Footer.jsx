@@ -1,4 +1,5 @@
 import { Upload, Github, Linkedin, Mail, Globe } from "lucide-react";
+import React from "react";
 
 export default function Footer(){
     return (
