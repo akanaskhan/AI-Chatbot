@@ -1,4 +1,4 @@
-import {  message } from "antd";
+import { message } from "antd";
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { auth, db } from "../../utils/firebase";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
@@ -46,45 +46,43 @@ function SignUp() {
       });
   };
 
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
 
- const handleSignUp = async (e) => {
-  e.preventDefault();
-  setError(null);
-  setLoading(true); // Show loader
+    try {
+      const authInstance = getAuth();
+      const userCredential = await createUserWithEmailAndPassword(
+        authInstance,
+        email,
+        password
+      );
+      const signedUpUser = userCredential.user;
 
-  try {
-    const authInstance = getAuth();
-    const userCredential = await createUserWithEmailAndPassword(
-      authInstance,
-      email,
-      password
-    );
-    const signedUpUser = userCredential.user;
+      const userCollection = collection(db, "users");
+      await addDoc(userCollection, {
+        email: signedUpUser.email,
+        uid: signedUpUser.uid,
+        displayName: Username,
+      });
 
-    const userCollection = collection(db, "users");
-    await addDoc(userCollection, {
-      email: signedUpUser.email,
-      uid: signedUpUser.uid,
-      displayName: Username,
-    });
+      message.success("Account Created Successfully");
+      navigate("/login");
+      await signOut(authInstance);
+    } catch (error) {
+      console.error("Signup error:", error);
+      setError(error.message);
 
-    message.success("Account Created Successfully");
-    navigate("/login");
-    await signOut(authInstance);
-  } catch (error) {
-    console.error("Signup error:", error);
-    setError(error.message);
-
-    if (error.code === "auth/email-already-in-use") {
-      message.info("Email already exists");
-    } else {
-      message.error("Something went wrong. Try again later.");
+      if (error.code === "auth/email-already-in-use") {
+        message.info("Email already exists");
+      } else {
+        message.error("Something went wrong. Try again later.");
+      }
+    } finally {
+      setLoading(false); 
     }
-  } finally {
-    setLoading(false); // Hide loader in all cases
-  }
-};
-
+  };
 
   const handleToggle = () => {
     if (type === "password") {
@@ -96,14 +94,13 @@ function SignUp() {
     }
   };
   return (
-      <motion.div
-  initial={{ opacity: 0, scale: 0.9 }}
-  animate={{ opacity: 1, scale: 1 }}
-  exit={{ opacity: 0, scale: 0.95 }}
-  transition={{ duration: 0.8 }}
-  className="backgroundImage h-screen flex justify-center items-center "
->
-        
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.8 }}
+      className="backgroundImage h-screen flex justify-center items-center "
+    >
       <div className="flex justify-center   ">
         <div className="p-7 rounded-2xl border border-white/20 shadow-xl backdrop-blur-xl bg-white/10 text-white">
           <div className="text-center mb-4">
@@ -120,7 +117,7 @@ function SignUp() {
                 placeholder="Enter you name"
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                />
+              />
             </div>
             <div className="mt-3">
               <label>Email:</label>
@@ -146,49 +143,49 @@ function SignUp() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                />
+              />
               <span
                 className="flex justify-around items-center"
                 onClick={handleToggle}
-                >
+              >
                 <Icon className="absolute mr-10" icon={icon} size={25} />
               </span>
             </div>
             <button
-  className={`mt-3 py-2.5 w-72 rounded bg-white text-gray-900 transition-all flex justify-center items-center ${
-    loading ? "opacity-60 cursor-not-allowed" : ""
-  }`}
-  type="submit"
-  disabled={loading}
->
-  {loading ? (
-    <span className="flex items-center justify-center gap-2">
-      <svg
-        className="animate-spin h-5 w-5 text-gray-900"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          className="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          strokeWidth="4"
-        ></circle>
-        <path
-          className="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-        ></path>
-      </svg>
-      Signing in...
-    </span>
-  ) : (
-    "Sign Up"
-  )}
-</button>
+              className={`mt-3 py-2.5 w-72 rounded bg-white text-gray-900 transition-all flex justify-center items-center ${
+                loading ? "opacity-60 cursor-not-allowed" : ""
+              }`}
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg
+                    className="animate-spin h-5 w-5 text-gray-900"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    ></path>
+                  </svg>
+                  Signing in...
+                </span>
+              ) : (
+                "Sign Up"
+              )}
+            </button>
           </form>
           <div>
             <Link to="/login">
@@ -200,14 +197,13 @@ function SignUp() {
           <button
             className="w-72 learn-btn transition-all flex  rounded mt-3  focus:outline-none active:outline-none active:border-none focus:border-none py-1.5 px-2 bg-gray-900 text-white justify-center items-center"
             onClick={handleLogin}
-            >
+          >
             <img className="w-9 pr-2" src={GoogleIcon} alt="" />
             Sign Up with Google
           </button>
         </div>
       </div>
-            </motion.div>
-    
+    </motion.div>
   );
 }
 

@@ -33,9 +33,7 @@ export default function Navbar() {
     >
       <nav className=" fixed z-10  w-full  container-sm top-2  ">
         <div className="mx-2">
-          <div
-            className="mx-auto max-w-5xl px-0 md:px-2 lg:px-4 w-full  GlassEffect rounded-full  border-none outline-none "
-          >
+          <div className="mx-auto max-w-5xl px-0 md:px-2 lg:px-4 w-full  GlassEffect rounded-full  border-none outline-none ">
             <div className="relative flex h-14 items-center justify-between">
               {/* Mobile menu button */}
               <div className="absolute inset-y-0 left-2 flex items-center sm:hidden">
@@ -136,7 +134,7 @@ export default function Navbar() {
                       )
                     ) : (
                       // <span className="flex items-center text-gray-900 rounded-full font-semibold p-1">
-                        <LogIn className="w-6 h-6 rounded-full  bg-white text-gray-900 " />
+                      <LogIn className="w-6 h-6 rounded-full  bg-white text-gray-900 " />
                       // </span>
                     )}
                   </button>

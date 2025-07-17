@@ -16,7 +16,10 @@ function AuthContextProvider({ children }) {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         try {
-          const q = query(collection(db, "users"), where("uid", "==", firebaseUser.uid));
+          const q = query(
+            collection(db, "users"),
+            where("uid", "==", firebaseUser.uid)
+          );
           const querySnapshot = await getDocs(q);
 
           if (!querySnapshot.empty) {

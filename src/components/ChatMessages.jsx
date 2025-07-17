@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 export default function ChatMessages({ chat }) {
-  const {user} = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
   return (
     <>
       {chat.map((msg, idx) => (
@@ -14,7 +14,6 @@ export default function ChatMessages({ chat }) {
               : "bg-gray-200 mr-10 rounded-t-xl rounded-br-xl"
           }`}
         >
-          
           <span className="animate-fade transition-opacity">{msg.text}</span>
           {msg.timestamp ? (
             <div className="text-[10px] text-gray-500 mt-1 ml-2 whitespace-nowrap animate-fade transition-opacity text-end mb-0">
