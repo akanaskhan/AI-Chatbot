@@ -41,7 +41,7 @@ export default function Navbar() {
               <div className="absolute inset-y-0 left-2 flex items-center sm:hidden">
                 <button
                   type="button"
-                  className="relative inline-flex items-center justify-center rounded-full p-1 text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-white"
+                  className="relative inline-flex items-center justify-center rounded-full p-1 text-gray-900 bg-white focus:outline-none "
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 >
                   <span className="sr-only">Open main menu</span>
