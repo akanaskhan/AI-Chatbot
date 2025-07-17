@@ -8,7 +8,7 @@ export default function ChatMessages({ chat }) {
       {chat.map((msg, idx) => (
         <div
           key={idx}
-          className={`p-3 pb-0.5 w-fit max-w-prose relative   ${
+          className={`p-3 pb-0.5 w-fit  relative max-w-[85%]  ${
             msg.role === "user"
               ? " rounded-t-xl rounded-bl-xl ml-auto w-fit  max-w-[80%] break-all lg:max-w-prose GlassEffect text-white"
               : "bg-gray-200 mr-10 rounded-t-xl rounded-br-xl"
