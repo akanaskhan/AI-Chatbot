@@ -118,7 +118,7 @@ export default function Navbar() {
                 {/* Profile dropdown */}
                 <div className="relative ml-2 w-fit h-fit">
                   <button
-                    className="flex rounded-full font-semibold p-1 bg-white text-sm focus:outline-none "
+                    className="flex rounded-full w-8 h-8 font-semibold p-1 bg-white text-sm focus:outline-none "
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   >
                     <span className="sr-only">Open user menu</span>
@@ -127,7 +127,7 @@ export default function Navbar() {
                         <div>
                           <img
                             src={user.photoUrl}
-                            className="w-7 h-7 "
+                            className="w-full h-full rounded-full"
                             alt="User Avatar"
                           />
                         </div>
