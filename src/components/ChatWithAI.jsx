@@ -183,7 +183,7 @@ export default function ChatWithAI() {
           {loading && <ThinkingLoader />}
         </div>
 
-          <div className="fixed  w-full md:w-12/12 lg:w-9/12 rounded-t-xl bottom-0 grid self-center py-3 px-4 md:px-0 lg:px-32 bg-gray-900">
+          <div className="fixed  w-full md:w-12/12 lg:w-9/12 rounded-t-xl bottom-0 grid self-center py-3 px-3 md:px-0 lg:px-32 bg-gray-900">
             <motion.div
       initial={{ opacity: 0, y: 10, zIndex: -10 }}
       animate={{ opacity: 1, y: 0 , zIndex: -10}}
