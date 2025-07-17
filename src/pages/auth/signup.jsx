@@ -12,6 +12,14 @@ import { eye } from "react-icons-kit/feather/eye";
 import GoogleIcon from "../../assets/images/googleIcon.svg";
 import { motion } from "framer-motion";
 function SignUp() {
+  const [Username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [type, setType] = useState("password");
+  const [icon, setIcon] = useState(eyeOff);
   const navigate = useNavigate();
   const handleLogin = () => {
     const provider = new GoogleAuthProvider();
@@ -38,49 +46,45 @@ function SignUp() {
       });
   };
 
-  const [Username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
-  const [user, setUser] = useState(null);
 
-  const [type, setType] = useState("password");
-  const [icon, setIcon] = useState(eyeOff);
+ const handleSignUp = async (e) => {
+  e.preventDefault();
+  setError(null);
+  setLoading(true); // Show loader
 
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-    setError(null);
+  try {
+    const authInstance = getAuth();
+    const userCredential = await createUserWithEmailAndPassword(
+      authInstance,
+      email,
+      password
+    );
+    const signedUpUser = userCredential.user;
 
-    try {
-      const authInstance = getAuth();
-      const userCredential = await createUserWithEmailAndPassword(
-        authInstance,
-        email,
-        password
-      );
-      const signedUpUser = userCredential.user;
+    const userCollection = collection(db, "users");
+    await addDoc(userCollection, {
+      email: signedUpUser.email,
+      uid: signedUpUser.uid,
+      displayName: Username,
+    });
 
-      const userCollection = collection(db, "users");
-      await addDoc(userCollection, {
-        email: signedUpUser.email,
-        uid: signedUpUser.uid,
-        displayName: Username,
-      });
-      console.log(Username)
-      message.success("Account Created Successfully");
-      navigate("/login");
-      await signOut(authInstance);
-    } catch (error) {
-      console.error("Signup error:", error);
-      setError(error.message);
+    message.success("Account Created Successfully");
+    navigate("/login");
+    await signOut(authInstance);
+  } catch (error) {
+    console.error("Signup error:", error);
+    setError(error.message);
 
-      if (error.code === "auth/email-already-in-use") {
-        message.info("Email already exists");
-      } else {
-        message.error("Something went wrong. Try again later.");
-      }
+    if (error.code === "auth/email-already-in-use") {
+      message.info("Email already exists");
+    } else {
+      message.error("Something went wrong. Try again later.");
     }
-  };
+  } finally {
+    setLoading(false); // Hide loader in all cases
+  }
+};
+
 
   const handleToggle = () => {
     if (type === "password") {
@@ -92,17 +96,16 @@ function SignUp() {
     }
   };
   return (
-    <div className="backgroundImage h-screen flex justify-center items-center bg-gray-900">
-       <motion.div
-      initial={{ opacity: 0, y: -30 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 1 }}
-      className=""
-      >
+      <motion.div
+  initial={{ opacity: 0, scale: 0.9 }}
+  animate={{ opacity: 1, scale: 1 }}
+  exit={{ opacity: 0, scale: 0.95 }}
+  transition={{ duration: 0.8 }}
+  className="backgroundImage h-screen flex justify-center items-center "
+>
         
       <div className="flex justify-center   ">
-        <div className="p-7 rounded-2xl border border-white/20 shadow-xl backdrop-blur-md bg-white/10 text-white">
+        <div className="p-7 rounded-2xl border border-white/20 shadow-xl backdrop-blur-xl bg-white/10 text-white">
           <div className="text-center mb-4">
             <p className=" font-extrabold text-3xl font-sans ">Sign Up</p>
           </div>
@@ -152,12 +155,40 @@ function SignUp() {
               </span>
             </div>
             <button
-              className="mt-3 py-2.5 w-72 rounded bg-white text-gray-900  transition-all"
-              type="submit"
-              >
-              Sign Up
-              {error && console.log(error)}
-            </button>
+  className={`mt-3 py-2.5 w-72 rounded bg-white text-gray-900 transition-all flex justify-center items-center ${
+    loading ? "opacity-60 cursor-not-allowed" : ""
+  }`}
+  type="submit"
+  disabled={loading}
+>
+  {loading ? (
+    <span className="flex items-center justify-center gap-2">
+      <svg
+        className="animate-spin h-5 w-5 text-gray-900"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        ></circle>
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+        ></path>
+      </svg>
+      Signing in...
+    </span>
+  ) : (
+    "Sign Up"
+  )}
+</button>
           </form>
           <div>
             <Link to="/login">
@@ -176,7 +207,7 @@ function SignUp() {
         </div>
       </div>
             </motion.div>
-    </div>
+    
   );
 }
 

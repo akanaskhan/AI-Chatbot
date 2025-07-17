@@ -223,8 +223,8 @@ export default function ChatWithAI() {
           
       </div>
             {showLoginOverlay && (
-  <div className="absolute top-0 z-50 w-full  backdrop-blur-sm flex items-center justify-center">
-    <div className=" p-6 rounded-xl shadow-xl w-full max-w-md relative">
+  <div className="absolute top-0 z-50 w-full h-screen  backdrop-blur-sm flex items-center justify-center">
+    <div className=" w-full max-w-md relative h-screen">
       <LogIn />
       
     </div>

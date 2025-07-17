@@ -11,7 +11,7 @@ import { ArrowRightCircle } from "lucide-react";
 import { motion } from "framer-motion";
 function LogIn() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -20,23 +20,24 @@ function LogIn() {
 
   const [type, setType] = useState("password");
 
-  const handleSignIn = (e) => {
-    e.preventDefault();
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        setLoading(true);
-        setUser(userCredential.user);
-        setLoading(false);
+ const handleSignIn = (e) => {
+  e.preventDefault();
+  setLoading(true);
+  const auth = getAuth();
+  signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      setUser(userCredential.user);
+      setLoading(false); 
+      navigate("/");
+      message.success("Login Successfully");
+    })
+    .catch((error) => {
+      setError(error.message);
+      message.error("Invalid Email/Password");
+      setLoading(false); 
+    });
+};
 
-        navigate("/");
-        message.success("Login Successfully");
-      })
-      .catch((error) => {
-        setError(error.message);
-        message.error("Invalid Email/Pasword");
-      });
-  };
 
   const handleToggle = () => {
     if (type === "password") {
@@ -59,7 +60,7 @@ function LogIn() {
         className=""
       >
       <div className="flex justify-center textColor items-center">
-        <div className="p-7 rounded-2xl border border-white/20 shadow-xl backdrop-blur-md bg-white/10 text-white">
+        <div className="p-7 rounded-2xl border border-white/20 shadow-xl backdrop-blur-sm bg-white/10 text-white">
           <div className="text-center mb-4">
             <p className="textColor font-extrabold text-3xl font-sans ">
               Log In
@@ -100,11 +101,39 @@ function LogIn() {
               </div>
             </div>
             <button
-              className="mt-3 py-2.5 w-72 rounded bg-white text-gray-900  transition-all"
-              type="submit"
-            >
-              Login
-            </button>
+  className="mt-3 py-2.5 w-72 rounded bg-white text-gray-900 transition-all disabled:opacity-50"
+  type="submit"
+  disabled={loading}
+>
+  {loading ? (
+    <span className="flex items-center justify-center gap-2">
+      <svg
+        className="animate-spin h-5 w-5 text-gray-900"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        ></circle>
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+        ></path>
+      </svg>
+      Logging in...
+    </span>
+  ) : (
+    "Login"
+  )}
+</button>
+
           </form>
           {error && console.log(error)}
           <div>
