@@ -174,7 +174,7 @@ export default function ChatWithAI() {
       <div className="min-w-4xl -z-1 max-w-4xl w-full mx-auto px-4 pt-2 pb-4 flex flex-col relative">
         <div
           ref={chatContainerRef}
-          className=" rounded-xl shadow-inner h-svh scroll-m-28 lg:h-[700px] overflow-y-auto space-y-4 py-16 pt-20 scroll-smooth scrollbar-custom"
+          className=" rounded-3xl  shadow-inner h-svh scroll-m-28 lg:h-[700px] overflow-y-auto space-y-4 py-16 pt-20 scroll-smooth scrollbar-custom"
           >
           <Suspense fallback={<div className="text-sm text-gray-800">Loading messages...</div>}>
             <ChatMessages chat={chat} />
