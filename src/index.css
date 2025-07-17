@@ -61,6 +61,72 @@ body {
   }
 }
 
+body {
+  margin: 0;
+  height: 100vh;
+ 
+}
+
+.ball-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+.blurred-ball {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.9;
+  animation: float 6s infinite ease-in-out alternate;
+}
+
+/* Multiple glowing color variations */
+.ball1 {
+  top: 20%;
+  left: 30%;
+  background: #7e22ce;
+  box-shadow: 0 0 150px #a855f7;
+  animation-delay: 0s;
+}
+
+.ball2 {
+  top: 50%;
+  left: 60%;
+  background: #3b82f6;
+  box-shadow: 0 0 150px #60a5fa;
+  animation-delay: 1s;
+}
+
+.ball3 {
+  top: 70%;
+  left: 40%;
+  background: #f43f5e;
+  box-shadow: 0 0 150px #fb7185;
+  animation-delay: 2s;
+}
+
+/* Floating animation */
+@keyframes float {
+  0% {
+    transform: translateY(0px) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-40px) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0px) scale(1);
+    opacity: 0.8;
+  }
+}
+
+
+
+
 .GlassEffect {
   background: rgba(255, 255, 255, 0.2);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);

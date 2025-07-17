@@ -134,9 +134,9 @@ export default function ChatWithAI() {
       setChat((prev) => [...prev, { ...botMsg, timestamp: Date.now() }]);
     }
 
-    const utterance = new SpeechSynthesisUtterance(output);
-    utterance.lang = "en-US";
-    speechSynthesis.speak(utterance);
+    // const utterance = new SpeechSynthesisUtterance(output);
+    // utterance.lang = "en-US";
+    // speechSynthesis.speak(utterance);
   } catch (err) {
     console.error("Gemini error:", err);
     const fallback = {
@@ -163,13 +163,13 @@ export default function ChatWithAI() {
  
   return (
     
-    <div className=" -z-50">
+    <div className=" z-50">
       <motion.div
         initial={{ opacity: 0, y: 0, zIndex: -10 }}
         animate={{ opacity: 1, y: 0, zIndex: -10 }}
         exit={{ opacity: 0, y: 0, zIndex: -10 }}
         transition={{ duration: 1 }}
-        className="-z-50"
+        className="z-50"
       >
       <div className="min-w-4xl -z-1 max-w-4xl w-full mx-auto px-4 pt-2 pb-4 flex flex-col relative">
         <div
