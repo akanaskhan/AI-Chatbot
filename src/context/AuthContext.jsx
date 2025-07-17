@@ -21,7 +21,6 @@ function AuthContextProvider({ children }) {
 
           if (!querySnapshot.empty) {
             const docData = querySnapshot.docs[0].data();
-            console.log(docData.photoUrl);
             setUser({
               isLogin: true,
               uid: firebaseUser.uid,

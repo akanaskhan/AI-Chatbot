@@ -11,7 +11,6 @@ export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, displayName, photoUrl } = useContext(AuthContext);
   const navigate = useNavigate();
-  console.log(isDropdownOpen)
   const auth = getAuth();
   function HandleSignOut() {
     signOut(auth)
@@ -33,9 +32,9 @@ export default function Navbar() {
       className="z-50 "
     >
       <nav className=" fixed z-10  w-full  container-sm top-2  ">
-        <div className="px-3">
+        <div className="">
           <div
-            className="mx-auto max-w-5xl px-4 w-full 
+            className="mx-auto max-w-5xl px-0 md:px-2 lg:px-4 w-full 
   GlassEffect
   rounded-2xl  border-none outline-none "
           >
