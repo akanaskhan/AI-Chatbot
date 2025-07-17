@@ -32,18 +32,16 @@ export default function Navbar() {
       className="z-50 "
     >
       <nav className=" fixed z-10  w-full  container-sm top-2  ">
-        <div className="">
+        <div className="mx-2">
           <div
-            className="mx-auto max-w-5xl px-0 md:px-2 lg:px-4 w-full 
-  GlassEffect
-  rounded-2xl  border-none outline-none "
+            className="mx-auto max-w-5xl px-0 md:px-2 lg:px-4 w-full  GlassEffect rounded-full  border-none outline-none "
           >
-            <div className="relative flex h-16 items-center justify-between">
+            <div className="relative flex h-14 items-center justify-between">
               {/* Mobile menu button */}
-              <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+              <div className="absolute inset-y-0 left-2 flex items-center sm:hidden">
                 <button
                   type="button"
-                  className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+                  className="relative inline-flex items-center justify-center rounded-full p-1 text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-white"
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 >
                   <span className="sr-only">Open main menu</span>
@@ -97,8 +95,9 @@ export default function Navbar() {
 
               {/* Notification and Profile */}
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <button className="rounded-full bg-white text-gray-900 font-semibold p-1  focus:outline-none  focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                 onClick={() => setIsDropdownOpen(false)}
+                <button
+                  className="rounded-full bg-white text-gray-900 font-semibold p-1  focus:outline-none  focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                  onClick={() => setIsDropdownOpen(false)}
                 >
                   <span className="sr-only">View notifications</span>
                   <svg
@@ -117,9 +116,9 @@ export default function Navbar() {
                 </button>
 
                 {/* Profile dropdown */}
-                <div className="relative ml-3">
+                <div className="relative ml-2 w-fit h-fit">
                   <button
-                    className="flex rounded-full  text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                    className="flex rounded-full font-semibold p-1 bg-white text-sm focus:outline-none "
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   >
                     <span className="sr-only">Open user menu</span>
@@ -128,17 +127,17 @@ export default function Navbar() {
                         <div>
                           <img
                             src={user.photoUrl}
-                            className="w-8 h-8 rounded-full p-1"
+                            className="w-7 h-7 "
                             alt="User Avatar"
                           />
                         </div>
                       ) : (
-                        <User className="w-8 h-8 rounded-full bg-white p-1" />
+                        <User className=" " />
                       )
                     ) : (
-                      <span className="flex items-center text-gray-900 rounded-full font-semibold p-1">
-                        <LogIn className="w-8 h-8 rounded-full bg-white text-gray-900 p-1.5" />
-                      </span>
+                      // <span className="flex items-center text-gray-900 rounded-full font-semibold p-1">
+                        <LogIn className="w-6 h-6 rounded-full  bg-white text-gray-900 " />
+                      // </span>
                     )}
                   </button>
                   {/* Dropdown */}
@@ -173,8 +172,8 @@ export default function Navbar() {
 
           {/* Mobile menu */}
           {isMobileMenuOpen && (
-            <div className="sm:hidden" id="mobile-menu">
-              <div className="space-y-1 px-2 pt-2 pb-3">
+            <div className="sm:hidden rounded-md" id="mobile-menu">
+              <div className="space-y-1 px-2 pt-2 pb-3 bg-gray-800 rounded-md">
                 <a
                   href="#"
                   className="bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
