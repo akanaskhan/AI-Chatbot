@@ -26,7 +26,7 @@ const storage = getStorage(app);
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    console.log("✅ Authenticated user:", user);
+    console.log("User is exist");
   } else {
     console.log("🚫 No user logged in");
   }

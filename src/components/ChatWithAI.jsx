@@ -11,7 +11,8 @@ import { ref, onValue, set, push, getDatabase } from "firebase/database";
 import { getDatabase as getRTDB } from "firebase/database";
 import { AuthContext } from "../context/AuthContext";
 import ThinkingLoader from "./ThinkingLoader";
-
+import { motion } from "framer-motion";
+import LogIn from "../pages/auth/login";
 const ChatMessages = React.lazy(() => import("./ChatMessages"));
 
 const ai = new GoogleGenAI({
@@ -22,31 +23,27 @@ const ai = new GoogleGenAI({
 export default function ChatWithAI() {
   const [userInput, setUserInput] = useState("");
   const [chat, setChat] = useState([]);
+  const [showLoginOverlay, setShowLoginOverlay] = useState(false);
+  const [UserChat, setUserChat] = useState(false);
   const [loading, setLoading] = useState(false);
   const [listening, setListening] = useState(false);
+  const [unauthMessageCount, setUnauthMessageCount] = useState(0);
   const chatContainerRef = useRef(null);
   const recognitionRef = useRef(null);
   const { user } = useContext(AuthContext);
   const rtdb = getRTDB();
 
-  useEffect(() => {
-    if (user?.isLogin && user?.uid) {
-      console.log("✅ UID from AuthContext:", user.uid);
-    } else {
-      console.warn("⚠️ User not ready yet or not logged in");
-    }
-  }, [user]);
-
+  
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
+    
   }, [chat, loading]);
 
   useEffect(() => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) return alert("Speech recognition not supported.");
 
     const recognition = new SpeechRecognition();
@@ -56,7 +53,6 @@ export default function ChatWithAI() {
 
     recognition.onstart = () => setListening(true);
     recognition.onend = () => setListening(false);
-
     recognition.onresult = (e) => {
       let transcript = "";
       for (let i = e.resultIndex; i < e.results.length; ++i) {
@@ -67,11 +63,11 @@ export default function ChatWithAI() {
 
     recognitionRef.current = recognition;
   }, []);
-
+ 
   useEffect(() => {
-    if (!user?.uid) return;
+    if (!user?.isLogin || !user?.uid) return;
+ 
     const chatRef = ref(rtdb, `chats/${user.uid}`);
-
     const unsubscribe = onValue(chatRef, (snapshot) => {
       const data = snapshot.val();
       const messages = data ? Object.values(data) : [];
@@ -80,10 +76,12 @@ export default function ChatWithAI() {
     });
 
     return () => unsubscribe();
-  }, [user?.uid]);
+  }, [user?.uid, user?.isLogin]);
 
   const saveMessage = async (message) => {
-    if (!user?.uid) return;
+    if (!user?.isLogin || !user?.uid)
+      
+      return; 
     const msgRef = ref(rtdb, `chats/${user.uid}`);
     const newMsgRef = push(msgRef);
     await set(newMsgRef, {
@@ -93,92 +91,148 @@ export default function ChatWithAI() {
   };
 
   const handleSend = async () => {
-    if (!userInput.trim()) return;
+  if (!userInput.trim()) return;
 
-    const userMsg = { role: "user", text: userInput };
-    setUserInput("");
-    setLoading(true);
+  if (!user?.isLogin && unauthMessageCount >= 3) {
+  setChat(prev => [
+    ...prev,
+    {
+      role: "bot",
+      text: "⚠️ You've reached the limit of 3 messages. Please log in to continue chatting.",
+      timestamp: Date.now(),
+    },
+  ]);
+  setUserInput("");
+  setShowLoginOverlay(true); 
+  return;
+}
+
+
+  const userMsg = { role: "user", text: userInput };
+  setUserInput("");
+  setLoading(true);
+
+  if (user?.isLogin) {
     await saveMessage(userMsg);
+  } else {
+    setChat((prev) => [...prev, { ...userMsg, timestamp: Date.now() }]);
+    setUnauthMessageCount((count) => count + 1);
+  }
 
-    try {
-      const result = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: userInput,
-      });
+  try {
+    const result = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: userInput,
+    });
 
-      const output = result.candidates[0].content.parts[0].text;
-      const botMsg = { role: "bot", text: output };
+    const output = result.candidates[0].content.parts[0].text;
+    const botMsg = { role: "bot", text: output };
+
+    if (user?.isLogin) {
       await saveMessage(botMsg);
-
-      const utterance = new SpeechSynthesisUtterance(output);
-      utterance.lang = "en-US";
-      speechSynthesis.speak(utterance);
-    } catch (err) {
-      console.error("Gemini error:", err);
-      const fallback = {
-        role: "bot",
-        text: "❌ Something went wrong. Try again.",
-      };
-      await saveMessage(fallback);
-    } finally {
-      setLoading(false);
+    } else {
+      setChat((prev) => [...prev, { ...botMsg, timestamp: Date.now() }]);
     }
-  };
+
+    const utterance = new SpeechSynthesisUtterance(output);
+    utterance.lang = "en-US";
+    speechSynthesis.speak(utterance);
+  } catch (err) {
+    console.error("Gemini error:", err);
+    const fallback = {
+      role: "bot",
+      text: "Something went wrong. Try again.",
+    };
+
+    if (user?.isLogin) {
+      await saveMessage(fallback);
+    } else {
+      setChat((prev) => [...prev, { ...fallback, timestamp: Date.now() }]);
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleVoiceInput = () => {
     if (recognitionRef.current) {
-      listening
-        ? recognitionRef.current.stop()
-        : recognitionRef.current.start();
+      listening ? recognitionRef.current.stop() : recognitionRef.current.start();
     }
   };
-
+ 
   return (
-    <div className="bg-gray-900">
-      <div className="min-w-4xl -z-1  max-w-4xl w-full  mx-auto px-4 pt-2 pb-4  flex flex-col relative">
+    
+    <div className=" -z-50">
+      <motion.div
+        initial={{ opacity: 0, y: 0, zIndex: -10 }}
+        animate={{ opacity: 1, y: 0, zIndex: -10 }}
+        exit={{ opacity: 0, y: 0, zIndex: -10 }}
+        transition={{ duration: 1 }}
+        className="-z-50"
+      >
+      <div className="min-w-4xl -z-1 max-w-4xl w-full mx-auto px-4 pt-2 pb-4 flex flex-col relative">
         <div
           ref={chatContainerRef}
-          className="  bg-gray-900 rounded-xl shadow-inner   
-        h-svh scroll-m-28  lg:h-[700px]   overflow-y-auto space-y-4 py-16 pt-20 scroll-smooth scrollbar-custom"
-        >
-          <Suspense
-            fallback={
-              <div className="text-sm  text-gray-800">Loading messages...</div>
-            }
+          className=" rounded-xl shadow-inner h-svh scroll-m-28 lg:h-[700px] overflow-y-auto space-y-4 py-16 pt-20 scroll-smooth scrollbar-custom"
           >
+          <Suspense fallback={<div className="text-sm text-gray-800">Loading messages...</div>}>
             <ChatMessages chat={chat} />
           </Suspense>
 
           {loading && <ThinkingLoader />}
         </div>
-        <div className="fixed  z-1 w-full lg:w-9/12 rounded-t-xl  bottom-0 grid   self-center  py-3 px-4  lg:px-32 bg-gray-900  ">
-          <div className="flex gap-2   self-center shadow-black  drop-shadow-md pt-1">
+
+          <div className="fixed  w-full md:w-12/12 lg:w-9/12 rounded-t-xl bottom-0 grid self-center py-3 px-4 md:px-0 lg:px-32 bg-gray-900">
+            <motion.div
+      initial={{ opacity: 0, y: 10, zIndex: -10 }}
+      animate={{ opacity: 1, y: 0 , zIndex: -10}}
+      exit={{ opacity: 0, y: 0, zIndex: -10 }}
+      transition={{ duration: 1 }}
+      className="-z-50"
+            >
+              
+          <div className="flex gap-2 self-center shadow-black drop-shadow-md pt-1">
             <input
               type="text"
               placeholder="Ask something..."
-              className="flex-1 p-3 rounded-xl w-full  GlassEffect focus:outline-none text-white "
+              className="flex-1 p-3 rounded-xl w-full GlassEffect focus:outline-none text-white"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
             />
             <button
               onClick={handleSend}
-              className="bg-gradient-to-r from-purple-600 via-indigo-500 to-blue-500 hover:from-purple-700 hover:to-blue-600 transition-all text-white p-3 rounded-xl "
+              className="bg-gradient-to-r from-purple-600 via-indigo-500 to-blue-500 hover:from-purple-700 hover:to-blue-600 transition-all text-white p-3 rounded-xl"
             >
-              <Send size={18} />
+              <Send size={20} />
             </button>
             <button
               onClick={handleVoiceInput}
-              className={`$${
+              className={`${
                 listening ? "bg-red-500" : "bg-blue-500"
-              } text-white p-3 rounded-xl z-10 bg-blue-500 `}
+              } text-white p-3  rounded-xl z-10`}
               title={listening ? "Stop Listening" : "Start Voice Input"}
             >
-              <Mic size={18} />
+              <Mic size={20} />
             </button>
           </div>
-        </div>
+            </motion.div>
+
+          </div>
+          
       </div>
+            {showLoginOverlay && (
+  <div className="absolute top-0 z-50 w-full  backdrop-blur-sm flex items-center justify-center">
+    <div className=" p-6 rounded-xl shadow-xl w-full max-w-md relative">
+      <LogIn />
+      
     </div>
+  </div>
+)}
+    </motion.div>
+      </div>
+      
   );
 }
+

@@ -13,6 +13,7 @@ export default function AppRouter() {
       <BrowserRouter>
         <Navbar />
         <Routes>
+          <Route path="/" element={<ChatWithAI />} />
           <Route
             path="/login"
             element={user.isLogin ? <Navigate to={"/"} /> : <LogIn />}
@@ -23,7 +24,7 @@ export default function AppRouter() {
             element={user?.isLogin ? <ChatWithAI /> : <LogIn />}
           />
 
-          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/sign-up" element={<SignUp />} /> 
         </Routes>
       </BrowserRouter>
     </>

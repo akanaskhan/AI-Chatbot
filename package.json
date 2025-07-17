@@ -2,7 +2,7 @@
   "name": "ai-chatbot",
   "version": "1.0.0",
   "private": true,
-    "type": "module",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -13,6 +13,7 @@
     "@google/generative-ai": "^0.24.1",
     "antd": "^5.26.4",
     "firebase": "^11.10.0",
+    "framer-motion": "^12.23.6",
     "lucide-react": "^0.525.0",
     "openai": "^5.8.2",
     "react": "^18.2.0",

@@ -10,7 +10,7 @@ import { Icon } from "react-icons-kit";
 import { eyeOff } from "react-icons-kit/feather/eyeOff";
 import { eye } from "react-icons-kit/feather/eye";
 import GoogleIcon from "../../assets/images/googleIcon.svg";
-
+import { motion } from "framer-motion";
 function SignUp() {
   const navigate = useNavigate();
   const handleLogin = () => {
@@ -66,7 +66,7 @@ function SignUp() {
         uid: signedUpUser.uid,
         displayName: Username,
       });
-
+      console.log(Username)
       message.success("Account Created Successfully");
       navigate("/login");
       await signOut(authInstance);
@@ -93,6 +93,14 @@ function SignUp() {
   };
   return (
     <div className="backgroundImage h-screen flex justify-center items-center bg-gray-900">
+       <motion.div
+      initial={{ opacity: 0, y: -30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 1 }}
+      className=""
+      >
+        
       <div className="flex justify-center   ">
         <div className="p-7 rounded-2xl border border-white/20 shadow-xl backdrop-blur-md bg-white/10 text-white">
           <div className="text-center mb-4">
@@ -109,7 +117,7 @@ function SignUp() {
                 placeholder="Enter you name"
                 onChange={(e) => setUsername(e.target.value)}
                 required
-              />
+                />
             </div>
             <div className="mt-3">
               <label>Email:</label>
@@ -135,18 +143,18 @@ function SignUp() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-              />
+                />
               <span
-                class="flex justify-around items-center"
+                className="flex justify-around items-center"
                 onClick={handleToggle}
-              >
-                <Icon class="absolute mr-10" icon={icon} size={25} />
+                >
+                <Icon className="absolute mr-10" icon={icon} size={25} />
               </span>
             </div>
             <button
               className="mt-3 py-2.5 w-72 rounded bg-white text-gray-900  transition-all"
               type="submit"
-            >
+              >
               Sign Up
               {error && console.log(error)}
             </button>
@@ -161,12 +169,13 @@ function SignUp() {
           <button
             className="w-72 learn-btn transition-all flex  rounded mt-3  focus:outline-none active:outline-none active:border-none focus:border-none py-1.5 px-2 bg-gray-900 text-white justify-center items-center"
             onClick={handleLogin}
-          >
+            >
             <img className="w-9 pr-2" src={GoogleIcon} alt="" />
             Sign Up with Google
           </button>
         </div>
       </div>
+            </motion.div>
     </div>
   );
 }

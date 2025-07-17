@@ -1,8 +1,7 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 import { auth, db } from "../utils/firebase";
-import { doc, getDoc } from "firebase/firestore";
-import { Spin } from "antd";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import Loader from "../components/Loader.jsx";
 
 export const AuthContext = createContext();
@@ -10,24 +9,38 @@ export const AuthContext = createContext();
 function AuthContextProvider({ children }) {
   const [user, setUser] = useState({ isLogin: false });
   const [loader, setLoader] = useState(true);
+  const [userData, setUserData] = useState(null);
+  const [displayName, setDisplayName] = useState("");
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const docRef = doc(db, "users", user.uid);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
         try {
-          const userInfo = (await getDoc(docRef)).data();
-         
-          setUser({
-            isLogin: true,
-            uid: user.uid,
-            ...userInfo,
-          });
+          const q = query(collection(db, "users"), where("uid", "==", firebaseUser.uid));
+          const querySnapshot = await getDocs(q);
 
-          console.log(user.uid) 
+          if (!querySnapshot.empty) {
+            const docData = querySnapshot.docs[0].data();
+            setUser({
+              isLogin: true,
+              uid: firebaseUser.uid,
+              email: firebaseUser.email,
+              displayName: docData.displayName,
+            });
+            setUserData(docData);
+            setDisplayName(docData.displayName);
+          } else {
+            console.warn("No user document found in Firestore.");
+            setUser({
+              isLogin: true,
+              uid: firebaseUser.uid,
+              email: firebaseUser.email,
+              displayName: firebaseUser.displayName || "",
+            });
+          }
         } catch (error) {
-          console.error("Error fetching user info:", error);
-          setUser({ isLogin: false }); 
+          console.error("Error fetching user document:", error);
+          setUser({ isLogin: false });
         }
       } else {
         setUser({ isLogin: false });
@@ -35,18 +48,20 @@ function AuthContextProvider({ children }) {
       setLoader(false);
     });
 
-    return () => unsubscribe(); 
+    return () => unsubscribe();
   }, []);
 
+  if (loader) {
+    return (
+      <div className="flex h-screen justify-center items-center">
+        <Loader />
+      </div>
+    );
+  }
+
   return (
-    <AuthContext.Provider value={{ user }}>
-      {loader ? (
-        <div className="flex h-screen justify-center items-center">
-         <Loader/>
-        </div>
-      ) : (
-        children
-      )}
+    <AuthContext.Provider value={{ user, userData, displayName }}>
+      {children}
     </AuthContext.Provider>
   );
 }
