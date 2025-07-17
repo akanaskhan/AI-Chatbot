@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import { AuthContext } from "./context/AuthContext.jsx";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import PhotoURL from "./components/PhotoURL.jsx";
+import Home from "./components/Home.jsx";
 export default function AppRouter() {
   const { user } = useContext(AuthContext);
 
@@ -14,7 +15,7 @@ export default function AppRouter() {
       <BrowserRouter>
         <Navbar />
         <Routes>
-          <Route path="/" element={<ChatWithAI />} />
+          <Route path="/" element={<Home />} />
           <Route
             path="/login"
             element={user.isLogin ? <Navigate to={"/"} /> : <LogIn />}
