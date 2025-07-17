@@ -19,7 +19,7 @@ export default function AppRouter() {
           <Route path="/" element={<Home />} />
           <Route
             path="/login"
-            element={user.isLogin ? <Navigate to={"/"} /> : <LogIn />}
+            element={user.uid ? <Navigate to={"/"} /> : <LogIn />}
           />
           <Route path="/sign-up" element={<SignUp />} />
         </Routes>

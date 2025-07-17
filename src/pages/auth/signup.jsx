@@ -2,10 +2,9 @@ import { message } from "antd";
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { auth, db } from "../../utils/firebase";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
-import { useNavigate } from "react-router";
 import React, { useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Icon } from "react-icons-kit";
 import { eyeOff } from "react-icons-kit/feather/eyeOff";
 import { eye } from "react-icons-kit/feather/eye";
@@ -35,7 +34,7 @@ function SignUp() {
           uid: user.uid,
           displayName: user.displayName,
         }).then(() => {
-          navigate("/Login");
+          navigate("/login");
         });
       })
       .catch((error) => {
@@ -148,7 +147,7 @@ function SignUp() {
                 className="flex justify-around items-center"
                 onClick={handleToggle}
               >
-                <Icon className="absolute mr-10" icon={icon} size={25} />
+                <Icon className="absolute mr-10 " icon={icon} size={22} />
               </span>
             </div>
             <button

@@ -144,19 +144,26 @@ export default function Navbar() {
                       <a
                         href="#"
                         className="block px-4 py-2 text-sm text-gray-700 hover:text-gray-800"
+                        onClick={() => setIsDropdownOpen(false)}
                       >
                         Comming Soon
                       </a>
                       {user.isLogin ? (
                         <button
-                          onClick={HandleSignOut}
+                          onClick={ () => {
+                             HandleSignOut();
+                            setIsDropdownOpen(false);
+                          }}
                           className="block px-4 py-2 text-sm text-gray-700 hover:text-gray-800"
                         >
                           Sign out
                         </button>
                       ) : (
                         <Link to={"/login"}>
-                          <button className="block px-4 py-2 text-sm text-gray-700">
+                          <button
+                            className="block px-4 py-2 text-sm text-gray-700"
+                            onClick={() => setIsDropdownOpen(false)}
+                          >
                             login
                           </button>
                         </Link>
