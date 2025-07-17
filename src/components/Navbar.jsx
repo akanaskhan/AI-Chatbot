@@ -30,12 +30,12 @@ export default function Navbar() {
       animate={{ opacity: 1, y: 0, zIndex: 10 }}
       exit={{ opacity: 0, y: -0, zIndex: 10 }}
       transition={{ duration: 1 }}
-      className="z-50"
+      className="z-50 "
     >
       <nav className=" fixed z-10  w-full  container-sm top-2  ">
-        <div className="">
+        <div className="px-3">
 
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 
+        <div className="mx-auto max-w-5xl px-4 w-full 
   GlassEffect
   rounded-2xl  border-none outline-none ">
           <div className="relative flex h-16 items-center justify-between">
