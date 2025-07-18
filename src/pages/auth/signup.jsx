@@ -103,7 +103,7 @@ function SignUp() {
       <div className="flex justify-center   ">
         <div className="p-7 rounded-2xl border border-white/20 shadow-xl backdrop-blur-xl bg-white/10 text-white">
           <div className="text-center mb-4">
-            <p className=" font-extrabold text-3xl font-sans ">Sign Up</p>
+            <p className=" font-extrabold text-3xl font-sans ">Create an Account</p>
           </div>
           <form onSubmit={handleSignUp}>
             <div>
